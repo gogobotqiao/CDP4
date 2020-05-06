@@ -39,7 +39,11 @@ namespace CDP4Dashboard.ViewModels
         /// <returns>An instance of <see cref="DashboardBrowserViewModel"/></returns>
         public static DashboardBrowserViewModel InstantiatePanelViewModel(Iteration iteration, ISession session, IThingDialogNavigationService thingDialogNavigationService, IPanelNavigationService panelNavigationService, IDialogNavigationService dialogNavigationService, IPluginSettingsService pluginSettingsService)
         {
-            return new DashboardBrowserViewModel(iteration, session, thingDialogNavigationService, panelNavigationService, dialogNavigationService, pluginSettingsService);
+            var view = new Reporting.ReportDesigner(iteration);
+            view.Show();
+            return null;
+
+            //return new DashboardBrowserViewModel(iteration, session, thingDialogNavigationService, panelNavigationService, dialogNavigationService, pluginSettingsService);
         }
     }
 }
