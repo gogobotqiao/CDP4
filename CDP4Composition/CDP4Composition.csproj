@@ -221,6 +221,7 @@
     <Compile Include="Converters\RelationalOperatorKindConverter.cs" />
     <Compile Include="Converters\UnderscoreCapitalsToSpacedTitleCaseConverter.cs" />
     <Compile Include="Diagram\IDiagramContainer.cs" />
+    <Compile Include="Diagram\IDiagramEditorViewModel.cs" />
     <Compile Include="Diagram\IThingDiagramItem.cs" />
     <Compile Include="Diagram\NamedThingDiagramContentItem.cs" />
     <Compile Include="Diagram\ThingDiagramConnector.cs" />
@@ -249,6 +250,7 @@
     <Compile Include="Exceptions\SettingsException.cs" />
     <Compile Include="Extensions\FileExtensionMethods.cs" />
     <Compile Include="Modularity\PluginLoader.cs" />
+    <Compile Include="Mvvm\Behaviours\RibbonCategoryBehavior.cs" />
     <Compile Include="Mvvm\IOwnedThingViewModel.cs" />
     <Compile Include="Mvvm\IHaveContainedRows.cs" />
     <Compile Include="Mvvm\Types\DisposableReactiveList.cs" />
@@ -265,6 +267,7 @@
     <Compile Include="Navigation\Interfaces\IRegionCollectionSearcher.cs" />
     <Compile Include="Navigation\ThingSelectorDialogService.cs" />
     <Compile Include="Navigation\RegionCollectionSearcher.cs" />
+    <Compile Include="Ribbon\ExtendedRibbonPageCategory.cs" />
     <Compile Include="Services\AppSettingService\AppSettingsService.cs" />
     <Compile Include="Services\AppSettingService\IAppSettingsService.cs" />
     <Compile Include="Services\AppSettingService\AppSettings.cs" />
