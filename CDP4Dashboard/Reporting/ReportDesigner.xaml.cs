@@ -2,47 +2,200 @@
 {
     using System;
     using System.CodeDom.Compiler;
+    using System.Collections.Generic;
     using System.Linq;
-    using System.Windows;
 
     using CDP4Common.EngineeringModelData;
 
     using CDP4Composition.Reporting;
 
+    using DevExpress.Data.Filtering;
     using DevExpress.DataAccess.ObjectBinding;
+    using DevExpress.Diagram.Core.Native;
+    using DevExpress.Mvvm.Native;
+    using DevExpress.XtraReports.UI;
+
+    using NetOffice.MSProjectApi;
+    using NetOffice.OutlookApi;
+
+    using Window = System.Windows.Window;
 
     /// <summary>
     /// Interaction logic for ReportDesigner.xaml
     /// </summary>
     public partial class ReportDesigner : Window
     {
+
+
+        public class ArrayJoin : ICustomFunctionOperator
+        {
+
+            // Evaluates the function on the client.
+            object ICustomFunctionOperator.Evaluate(params object[] operands)
+            {
+                return "'" + string.Join(", ", (string[])operands[0]) + "'";
+            }
+
+            string ICustomFunctionOperator.Name
+            {
+                get { return nameof(ArrayJoin); }
+            }
+
+            Type ICustomFunctionOperator.ResultType(params Type[] operands)
+            {
+                return typeof(string);
+            }
+        }
+
         public ReportDesigner(Iteration iteration)
         {
             this.InitializeComponent();
-
+            CriteriaOperator.RegisterCustomFunction(new ArrayJoin());
             this.reportDesigner.ActiveDocumentChanged += (sender, args) =>
             {
                 if (args.NewValue != null)
                 {
-                    var localReport = ((DevExpress.Xpf.Reports.UserDesigner.ReportDesignerDocument) args.NewValue).Report;
+                    var activeDocument = (DevExpress.Xpf.Reports.UserDesigner.ReportDesignerDocument)args.NewValue;
+                    var localReport = activeDocument.Report;
 
-                    foreach (var component in localReport.ComponentStorage.OfType<ObjectDataSource>().ToList())
-                    {
-                        localReport.ComponentStorage.Remove(component);
-                        localReport.Container?.Remove(component);
-                    }
+                    //localReport.DataSourceDemanded += this.LocalReport_DataSourceDemanded;
 
-                    var dataSourceName = "MassBudgetDataSource";
-
-                    var dataSource = new ObjectDataSource()
-                    {
-                        DataSource = ClassicSharpCodeProvider(iteration, dataSourceName),
-                        Name = dataSourceName
-                    };
-
-                    localReport.DataSource = dataSource;
+                    this.SetDataSource();
                 }
             };
+        }
+
+        private void SetDataSource()
+        {
+            var activeDocument = this.reportDesigner.ActiveDocument;
+            var localReport = activeDocument.Report;
+
+            var components = localReport.ComponentStorage.OfType<ObjectDataSource>().ToList();
+            var dataSourceName = "MassBudgetDataSource";
+            var dataSource = components.FirstOrDefault(x => x.Name.Equals(dataSourceName));
+
+            if (dataSource == null)
+            {
+                dataSource = new ObjectDataSource
+                {
+                    Name = dataSourceName,
+                    DataSource = this.GetDataSource()
+                };
+
+                localReport.ComponentStorage.Add(dataSource);
+                localReport.DataSource = dataSource;
+            }
+            else
+            {
+                dataSource.DataSource = this.GetDataSource();
+            }
+
+            dataSource.RebuildResultSchema();
+        }
+
+        public class ParameterValue<T>
+        {
+            public ParameterValue(T value)
+            {
+                this.Value = value;
+            }
+
+            public T Value { get; private set; }
+        }
+
+        public class Data
+        {
+            public string SelectedDomain { get; set; }
+
+            public string ProductFunction { get; set; }
+
+            public decimal Value { get; set; }
+        }
+
+        private object GetDataSource()
+        {
+            var calculatedDataSource = new
+            {
+                Data = new List<Data>(),
+                Parameters = new
+                {
+                    ProductFunction = new List<ParameterValue<string>>
+                    {
+                        new ParameterValue<string>("Product"),
+                        new ParameterValue<string>("Function")
+                    },
+                    SelectedDomains = new List<ParameterValue<string>> 
+                        {
+                            new ParameterValue<string>("AOGNC"),
+                            new ParameterValue<string>("COM"),
+                            new ParameterValue<string>("CPROP"),
+                            new ParameterValue<string>("DH")
+                        }
+                }
+            };
+
+            calculatedDataSource.Data.Add(new Data
+            {
+                SelectedDomain = "AOGNC",
+                ProductFunction = "Product",
+                Value = 1M
+            });
+
+            calculatedDataSource.Data.Add(new Data
+            {
+                SelectedDomain = "AOGNC",
+                ProductFunction = "Function",
+                Value = 2M
+            });
+
+            calculatedDataSource.Data.Add(new Data
+            {
+                SelectedDomain = "COM",
+                ProductFunction = "Product",
+                Value = 1.1M
+            });
+
+            calculatedDataSource.Data.Add(new Data
+            {
+                SelectedDomain = "COM",
+                ProductFunction = "Function",
+                Value = 2.1M
+            });
+
+            calculatedDataSource.Data.Add(new Data
+            {
+                SelectedDomain = "CPROP",
+                ProductFunction = "Product",
+                Value = 0.1M
+            });
+
+            calculatedDataSource.Data.Add(new Data
+            {
+                SelectedDomain = "CPROP",
+                ProductFunction = "Function",
+                Value = 0.2M
+            });
+
+            calculatedDataSource.Data.Add(new Data
+            {
+                SelectedDomain = "DH",
+                ProductFunction = "Product",
+                Value = 10M
+            });
+
+            calculatedDataSource.Data.Add(new Data
+            {
+                SelectedDomain = "DH",
+                ProductFunction = "Function",
+                Value = 20M
+            });
+
+            return calculatedDataSource;
+        }
+
+        private void LocalReport_DataSourceDemanded(object sender, EventArgs e)
+        {
+            this.SetDataSource();
         }
 
         /// <summary>
