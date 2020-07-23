@@ -1,11 +1,52 @@
 ﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dxrud="http://schemas.devexpress.com/winfx/2008/xaml/reports/userdesigner"
+        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
         x:Class="CDP4Dashboard.Reporting.ReportDesigner"
         Title="MainWindow" Height="768" Width="1024">
     <Grid>
         <dxrud:ReportDesigner Name ="reportDesigner">
-            <!--<dxrud:ReportDesignerBrowserView CloseWindowWhenLastTabIsClosed="False"/>-->
+            <dxrud:ReportDesigner.RibbonCustomizationActions>
+                <dxb:RemoveAction ElementName="{x:Static dxrud:DefaultBarItemNames.Open}" />
+                <dxb:RemoveAction ElementName="{x:Static dxrud:DefaultBarItemNames.New}" />
+                <dxb:RemoveAction ElementName="{x:Static dxrud:DefaultBarItemNames.Save}" />
+                <dxb:RemoveAction ElementName="{x:Static dxrud:DefaultBarItemNames.SaveAs}" />
+                <dxb:RemoveAction ElementName="{x:Static dxrud:DefaultBarItemNames.AddNewDataSource}" />
+                <dxb:RemoveAction ElementName="{x:Static dxrud:DefaultBarItemNames.StylesGroup}" />
+                <dxb:InsertAction ContainerName="{x:Static dxrud:DefaultBarItemNames.ReportGroup}">
+                    <dxb:InsertAction.Element>
+                        <dxb:BarButtonItem ItemClick="OpenReport"
+                                        Command="{Binding Path=OpenReportCommand}"
+                                        LargeGlyph="{dx:DXImage Image=Open_32x32.png}"
+                                        Content="Open Report"
+                                        Hint="Open Report" />
+                    </dxb:InsertAction.Element>
+                </dxb:InsertAction>
+                <dxb:InsertAction ContainerName="{x:Static dxrud:DefaultBarItemNames.ReportGroup}">
+                    <dxb:InsertAction.Element>
+                        <dxb:BarButtonItem ItemClick="SaveReport"
+                                        Command="{Binding Path=SaveReportCommand}"
+                                        LargeGlyph="{dx:DXImage Image=Save_32x32.png}"
+                                        Content="Save Report"
+                                        Hint="Save Report" />
+                    </dxb:InsertAction.Element>
+                </dxb:InsertAction>
+                <dxb:InsertAction ContainerName="{x:Static dxrud:DefaultBarItemNames.ReportGroup}">
+                    <dxb:InsertAction.Element>
+                        <dxb:BarButtonItem
+                                        Command="{Binding Path=BuildScriptCommand}"
+                                        LargeGlyph="{dx:DXImage Image=Build_32x32.png}"
+                                        Content="Build"
+                                        Hint="Build" />
+                    </dxb:InsertAction.Element>
+                </dxb:InsertAction>
+                <!--<dxb:UpdateAction
+                                ElementName="{x:Static dxrud:DefaultBarItemNames.DesignerHomePage}"
+                                PropertyName="Caption"
+                                Value="File" />-->
+            </dxrud:ReportDesigner.RibbonCustomizationActions>
+            <dxrud:ReportDesignerClassicView  />
         </dxrud:ReportDesigner>
     </Grid>
 </Window>

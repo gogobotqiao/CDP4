@@ -159,6 +159,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Reactive.Core, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
       <Private>False</Private>
@@ -204,6 +205,7 @@
   <ItemGroup>
     <Compile Include="CDP4DashboardModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reporting\DataSourceCompiler.cs" />
     <Compile Include="Reporting\ReportDesigner.xaml.cs" />
     <Compile Include="Reporting\ReportDesignerViewModel.cs" />
     <Compile Include="Reporting\CDP4Report.cs">
@@ -279,6 +281,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="Reporting\CDP4Report.resx">
+      <DependentUpon>CDP4Report.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\RibbonXml\DashboardBrowserRibbon.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
